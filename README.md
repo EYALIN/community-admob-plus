@@ -1,3 +1,6 @@
+# You can stop using this plugin, we are going back to the admob-plus plugin which back to be maintained
+
+
 #### This is a fork of the original plugin admob-plus
 
 I dedicate a considerable amount of my free time to developing and maintaining many cordova plugins for the community ([See the list with all my maintained plugins][community_plugins]).
