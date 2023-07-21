@@ -11,3 +11,4 @@ website/translated_docs
 website/build/
 website/i18n/*
 /.idea/
+/internal/rollup-config/tsconfig.tsbuildinfo

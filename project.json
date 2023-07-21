@@ -9,7 +9,6 @@
         "command": "tsc -b --verbose"
       },
       "dependsOn": [
-        "clean"
       ]
     },
     "test": {

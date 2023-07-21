@@ -17,7 +17,7 @@
     "@admob-plus-internal/cli": "file:../../internal/cli",
     "@types/cordova": "^0.0.34",
     "admob-plus": "../../packages/cli",
-    "appium": "^1.22.3",
+    "appium": "2.0.0-beta.40",
     "appium-android-driver": "^5.2.7",
     "appium-doctor": "^1.16.0",
     "appium-uiautomator2-driver": "^2.4.6",

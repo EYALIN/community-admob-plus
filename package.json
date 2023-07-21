@@ -5,7 +5,6 @@
   "scripts": {
     "prepare": "nx build .",
     "prepublishOnly": "nx clean .",
-    "clean": "",
     "test": "nx test .",
     "fmt": "cordova-plus fmt examples/{cordova,cordova-consent,ionic-angular,ionic3,playground}",
     "lint": "gts lint",
@@ -96,7 +95,6 @@
   "workspaces": [
     "examples/*",
     "internal/*",
-    "packages/*",
-    "website"
+    "packages/*"
   ]
 }

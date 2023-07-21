@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.30.0](https://github.com/admob-plus/admob-plus/compare/admob-plus-cordova@1.27.0...admob-plus-cordova@1.28.0) (2022-07-21)
+
+### Features
+
+* **Admob SDK:** upgraded to 10.8.0
+* **Play services ads:** upgraded to 22.2.0
+
 # [1.29.4](https://github.com/admob-plus/admob-plus/compare/admob-plus-cordova@1.27.0...admob-plus-cordova@1.28.0) (2022-08-14)
 
 ### Features

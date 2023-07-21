@@ -1,8 +1,0 @@
-{
-  "name": "AdMob Plus Ionic",
-  "integrations": {
-    "cordova": {}
-  },
-  "type": "angular",
-  "npmClient": "pnpm"
-}
