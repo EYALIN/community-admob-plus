@@ -96,7 +96,7 @@ class AMBPlugin: CDVPlugin, WKNavigationDelegate {
         let ctx = AMBContext(command)
 
         GADMobileAds.sharedInstance().start(completionHandler: { _ in
-            ctx.resolve(["version": GADMobileAds.sharedInstance().sdkVersion])
+            ctx.resolve(["version": GADMobileAds.sharedInstance().versionNumber])
         })
 
         if let x = self.commandDelegate.settings["AdMobPlusWebViewAd".lowercased()] as? String,
