@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0](https://github.com/admob-plus/admob-plus/compare/cordova-plugin-consent@2.3.2...cordova-plugin-consent@2.4.0) (2023-11-25)
+
+
+### Features
+
+* make this plugin usable for new admob changes
+
 # [2.4.0](https://github.com/admob-plus/admob-plus/compare/cordova-plugin-consent@2.3.2...cordova-plugin-consent@2.4.0) (2022-08-14)
 
 

@@ -19,11 +19,11 @@
   "devDependencies": {
     "@admob-plus-internal/cli": "file:./internal/cli",
     "@admob-plus-internal/tsconfig": "file:./internal/tsconfig",
-    "@evilmartians/lefthook": "^1.1.0",
     "@commitlint/cli": "^17.0.3",
     "@commitlint/config-conventional": "^17.0.3",
     "@commitlint/config-lerna-scopes": "^17.0.2",
     "@commitlint/prompt-cli": "^17.0.3",
+    "@evilmartians/lefthook": "^1.1.0",
     "@ionic-native/admob-plus": "^5.36.0",
     "@nrwl/jest": "^14.5.6",
     "@nrwl/node": "^14.5.6",

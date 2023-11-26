@@ -30,7 +30,7 @@
         <variable name="APP_ID_ANDROID" value="ca-app-pub-3940256099942544~3347511713" />
         <variable name="APP_ID_IOS" value="ca-app-pub-3940256099942544~1458002511" />
     </plugin>
-    <plugin name="cordova-plugin-consent" spec="../../packages/cordova-consent" />
+    <plugin name="community-cordova-plugin-consent" spec="../../packages/cordova-consent" />
     <engine name="ios" spec="6.1.1" />
     <engine name="android" spec="9.0.0" />
 </widget>

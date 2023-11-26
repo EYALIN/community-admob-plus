@@ -296,7 +296,7 @@ async function startDev(opts: any) {
         name,
         cwd,
         platform,
-        pkgName: 'cordova-plugin-consent',
+        pkgName: 'community-cordova-plugin-consent',
         pkgDir: 'cordova-consent',
         javaPath: 'cordova/plugin/consent',
       });

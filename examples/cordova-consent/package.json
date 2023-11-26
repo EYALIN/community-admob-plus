@@ -11,7 +11,7 @@
     "community-admob-plus-cordova": "file:../../packages/cordova",
     "cordova-android": "^11.0.0",
     "cordova-ios": "^6.2.0",
-    "cordova-plugin-consent": "file:../../packages/cordova-consent"
+    "community-cordova-plugin-consent": "file:../../packages/cordova-consent"
   },
   "devDependencies": {
     "@admob-plus-internal/cli": "file:../../internal/cli",
@@ -28,7 +28,7 @@
         "APP_ID_ANDROID": "ca-app-pub-3940256099942544~3347511713",
         "APP_ID_IOS": "ca-app-pub-3940256099942544~1458002511"
       },
-      "cordova-plugin-consent": {}
+      "community-cordova-plugin-consent": {}
     }
   },
   "eslintConfig": {
