@@ -23,6 +23,38 @@ class CSNConsent: CDVPlugin {
 
         self.emit(eventType: CSNEvents.ready)
     }
+    @objc func canRequestAds(_ command: CDVInvokedUrlCommand) {
+        let ctx = CSNContext(command)
+        ctx.success(UMPConsentInformation.sharedInstance.canRequestAds)
+    }
+
+    @objc func privacyOptionsRequirementStatus(_ command: CDVInvokedUrlCommand) {
+        let ctx = CSNContext(command)
+        ctx.success(UMPConsentInformation.sharedInstance.privacyOptionsRequirementStatus.rawValue)
+    }
+
+    @objc func loadAndShowIfRequired(_ command: CDVInvokedUrlCommand) {
+        let ctx = CSNContext(command)
+        UMPConsentForm.loadAndPresentIfRequired(from: self.viewController) {
+            [weak self] loadAndPresentError in
+            guard self != nil else { return ctx.success() }
+
+            if let consentError = loadAndPresentError {
+                ctx.error(consentError)
+                return
+            }
+            ctx.success()
+        }
+    }
+
+    @objc func showPrivacyOptionsForm(_ command: CDVInvokedUrlCommand) {
+        let ctx = CSNContext(command)
+        UMPConsentForm.presentPrivacyOptionsForm(from: self.viewController) {
+            [weak self] formError in
+            guard self != nil, let formError else { return  ctx.success() }
+            ctx.error(formError)
+        }
+    }
 
     @objc func trackingAuthorizationStatus(_ command: CDVInvokedUrlCommand) {
         let ctx = CSNContext(command)

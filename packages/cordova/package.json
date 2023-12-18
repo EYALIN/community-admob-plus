@@ -1,6 +1,6 @@
 {
   "name": "community-admob-plus-cordova",
-  "version": "1.31.0",
+  "version": "1.31.1",
   "description": "Trustable Google AdMob Cordova Plugin",
   "main": "lib/index.js",
   "module": "esm/index.js",
