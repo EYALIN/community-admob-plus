@@ -12,6 +12,10 @@ public final class Generated {
         public static final String RESET = "reset";
         public static final String SHOW_FORM = "showForm";
         public static final String TRACKING_AUTHORIZATION_STATUS = "trackingAuthorizationStatus";
+        public static final String PRIVACY_OPTIONS_REQUIREMENT_STATUS = "privacyOptionsRequirementStatus";
+        public static final String CAN_REQUEST_ADS = "canRequestAds";
+        public static final String LOAD_AND_SHOW_IF_REQUIRED = "loadAndShowIfRequired";
+        public static final String SHOW_PRIVACY_OPTIONS_FORM = "showPrivacyOptionsForm";
     }
 
     public final class Events {

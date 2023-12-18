@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<plugin id="community-cordova-plugin-consent" version="2.5.0"
+<plugin id="community-cordova-plugin-consent" version="2.5.2"
     xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <name>@admob-plus/cordova-consent</name>
@@ -8,7 +8,7 @@
     </js-module>
 
     <platform name="android">
-        <preference name="UMP_VERSION" default="1.0.0+" />
+        <preference name="UMP_VERSION" default="2.1.0" />
 
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="Consent">

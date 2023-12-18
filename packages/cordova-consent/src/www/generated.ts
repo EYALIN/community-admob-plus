@@ -11,6 +11,10 @@ export enum NativeActions {
   reset = 'reset',
   showForm = 'showForm',
   trackingAuthorizationStatus = 'trackingAuthorizationStatus',
+  showPrivacyOptionsForm = 'showPrivacyOptionsForm',
+  loadAndShowIfRequired = 'loadAndShowIfRequired',
+  privacyOptionsRequirementStatus = 'privacyOptionsRequirementStatus',
+  canRequestAds = 'canRequestAds',
 }
 
 export enum Events {

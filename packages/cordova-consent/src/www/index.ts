@@ -18,6 +18,12 @@ export enum FormStatus {
   Unavailable = 2,
 }
 
+export enum PrivacyOptionsRequirementStatus {
+  Unknown = 0,
+  Required = 1,
+  NotRequired = 2,
+}
+
 export enum TrackingAuthorizationStatus {
   notDetermined = 0,
   restricted = 1,
@@ -41,7 +47,8 @@ export class Consent {
   public readonly ConsentStatus = ConsentStatus
   public readonly DebugGeography = DebugGeography
   public readonly FormStatus = FormStatus
-
+  public readonly PrivacyOptionsRequirementStatus =
+      PrivacyOptionsRequirementStatus;
   constructor() {
     initPlugin()
   }
@@ -77,6 +84,23 @@ export class Consent {
   public async getConsentStatus(): Promise<ConsentStatus> {
     const n = await execAsync(NativeActions.getConsentStatus)
     return ConsentStatus[ConsentStatus[n as number]]
+  }
+
+  public async canRequestAds():Promise<Boolean>  {
+    const n = await execAsync(NativeActions.canRequestAds)
+    return n as boolean;
+  }
+  public async privacyOptionsRequirementStatus()  {
+    const n = await execAsync(NativeActions.privacyOptionsRequirementStatus)
+    return n;
+  }
+  public loadAndShowIfRequired()  {
+    const n =  execAsync(NativeActions.loadAndShowIfRequired)
+    return n;
+  }
+  public  showPrivacyOptionsForm() {
+    const n =  execAsync(NativeActions.showPrivacyOptionsForm)
+    return n;
   }
 
   public async getFormStatus(): Promise<FormStatus> {
