@@ -11,11 +11,11 @@
     "test": "cordova-plus plugin test"
   },
   "dependencies": {
-    "fast-glob": "^3.2.11",
-    "fs-extra": "^10.1.0",
+    "fast-glob": "^3.3.2",
+    "fs-extra": "^11.2.0",
     "option": "^0.2.4",
-    "plist": "^3.0.6",
-    "replace-in-file": "^6.3.5"
+    "plist": "^3.1.0",
+    "replace-in-file": "^7.1.0"
   },
   "devDependencies": {
     "@admob-plus-internal/rollup-config": "file:../../internal/rollup-config",
