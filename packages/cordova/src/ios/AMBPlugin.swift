@@ -66,12 +66,14 @@ class AMBPlugin: CDVPlugin, WKNavigationDelegate {
         }
 
         if let tag = ctx.optChildDirectedTreatmentTag() {
-            requestConfiguration.tag(forChildDirectedTreatment: tag)
+           let tagAsNumber: NSNumber = NSNumber(value: tag)
+           requestConfiguration.tagForChildDirectedTreatment = tagAsNumber
         }
 
-        if let tag = ctx.optUnderAgeOfConsentTag() {
-            requestConfiguration.tagForUnderAge(ofConsent: tag)
-        }
+       if let tag = ctx.optUnderAgeOfConsentTag() {
+          let tagAsNumber: NSNumber = NSNumber(value: tag)
+          requestConfiguration.tagForUnderAgeOfConsent = tagAsNumber
+       }
 
         if let testDevices = ctx.optTestDeviceIds() {
             requestConfiguration.testDeviceIdentifiers = testDevices
@@ -96,7 +98,7 @@ class AMBPlugin: CDVPlugin, WKNavigationDelegate {
         let ctx = AMBContext(command)
 
         GADMobileAds.sharedInstance().start(completionHandler: { _ in
-            ctx.resolve(["version": GADMobileAds.sharedInstance().sdkVersion])
+            ctx.resolve(["version": GADMobileAds.sharedInstance().versionNumber])
         })
 
         if let x = self.commandDelegate.settings["AdMobPlusWebViewAd".lowercased()] as? String,

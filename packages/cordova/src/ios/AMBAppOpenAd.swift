@@ -43,7 +43,6 @@ class AMBAppOpenAd: AMBAdBase, GADFullScreenContentDelegate {
         GADAppOpenAd.load(
             withAdUnitID: self.adUnitId,
             request: adRequest,
-            orientation: self.orientation,
             completionHandler: { (ad, error) in
                 if error != nil {
                     self.emit(AMBEvents.adLoadFail, error!)
