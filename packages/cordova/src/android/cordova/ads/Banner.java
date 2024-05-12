@@ -90,25 +90,21 @@ public class Banner extends AdBase {
             @Override
             public void onAdClicked() {
                 emit(Events.AD_CLICK);
-                emit(Events.BANNER_CLICK);
             }
 
             @Override
             public void onAdClosed() {
                 emit(Events.AD_DISMISS);
-                emit(Events.BANNER_CLOSE);
             }
 
             @Override
             public void onAdFailedToLoad(LoadAdError error) {
                 emit(Events.AD_LOAD_FAIL, error);
-                emit(Events.BANNER_LOAD_FAIL, error);
             }
 
             @Override
             public void onAdImpression() {
                 emit(Events.AD_IMPRESSION);
-                emit(Events.BANNER_IMPRESSION);
             }
 
             @Override
@@ -121,13 +117,11 @@ public class Banner extends AdBase {
                 runJustBeforeBeingDrawn(adView, () -> emit(Events.BANNER_SIZE, computeAdSize()));
 
                 emit(Events.AD_LOAD, computeAdSize());
-                emit(Events.BANNER_LOAD);
             }
 
             @Override
             public void onAdOpened() {
                 emit(Events.AD_SHOW);
-                emit(Events.BANNER_OPEN);
             }
         });
         return adView;

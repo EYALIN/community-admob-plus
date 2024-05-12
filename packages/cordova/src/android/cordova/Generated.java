@@ -28,6 +28,7 @@ public final class Generated {
         public static final String SET_APP_MUTED = "setAppMuted";
         public static final String SET_APP_VOLUME = "setAppVolume";
         public static final String START = "start";
+
     }
 
     public static final class Events {
@@ -39,34 +40,7 @@ public final class Generated {
         public static final String AD_REWARD = "admob.ad.reward";
         public static final String AD_SHOW = "admob.ad.show";
         public static final String AD_SHOW_FAIL = "admob.ad.showfail";
-        public static final String BANNER_CLICK = "admob.banner.click";
-        public static final String BANNER_CLOSE = "admob.banner.close";
-        public static final String BANNER_IMPRESSION = "admob.banner.impression";
-        public static final String BANNER_LOAD = "admob.banner.load";
-        public static final String BANNER_LOAD_FAIL = "admob.banner.loadfail";
-        public static final String BANNER_OPEN = "admob.banner.open";
         public static final String BANNER_SIZE = "admob.banner.size";
-        public static final String BANNER_SIZE_CHANGE = "admob.banner.sizechange";
-        public static final String INTERSTITIAL_DISMISS = "admob.interstitial.dismiss";
-        public static final String INTERSTITIAL_IMPRESSION = "admob.interstitial.impression";
-        public static final String INTERSTITIAL_LOAD = "admob.interstitial.load";
-        public static final String INTERSTITIAL_LOAD_FAIL = "admob.interstitial.loadfail";
-        public static final String INTERSTITIAL_SHOW = "admob.interstitial.show";
-        public static final String INTERSTITIAL_SHOW_FAIL = "admob.interstitial.showfail";
         public static final String READY = "admob.ready";
-        public static final String REWARDED_DISMISS = "admob.rewarded.dismiss";
-        public static final String REWARDED_IMPRESSION = "admob.rewarded.impression";
-        public static final String REWARDED_INTERSTITIAL_DISMISS = "admob.rewardedi.dismiss";
-        public static final String REWARDED_INTERSTITIAL_IMPRESSION = "admob.rewardedi.impression";
-        public static final String REWARDED_INTERSTITIAL_LOAD = "admob.rewardedi.load";
-        public static final String REWARDED_INTERSTITIAL_LOAD_FAIL = "admob.rewardedi.loadfail";
-        public static final String REWARDED_INTERSTITIAL_REWARD = "admob.rewardedi.reward";
-        public static final String REWARDED_INTERSTITIAL_SHOW = "admob.rewardedi.show";
-        public static final String REWARDED_INTERSTITIAL_SHOW_FAIL = "admob.rewardedi.showfail";
-        public static final String REWARDED_LOAD = "admob.rewarded.load";
-        public static final String REWARDED_LOAD_FAIL = "admob.rewarded.loadfail";
-        public static final String REWARDED_REWARD = "admob.rewarded.reward";
-        public static final String REWARDED_SHOW = "admob.rewarded.show";
-        public static final String REWARDED_SHOW_FAIL = "admob.rewarded.showfail";
     }
 }

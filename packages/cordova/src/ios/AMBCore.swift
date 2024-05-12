@@ -77,8 +77,8 @@ extension AMBCoreContext {
         return optFloat("appVolume")
     }
 
-    func optId() -> Int? {
-        return optInt("id")
+    func optId() -> String? {
+        return optString("id")
     }
 
     func optPosition() -> String {
@@ -102,7 +102,7 @@ extension AMBCoreContext {
         if let ad = optAd() {
             return ad
         } else {
-            reject("Ad not found: \(optId() ?? -1)")
+            reject("Ad not found: \(optId() ?? "-")")
             return nil
         }
     }
@@ -167,42 +167,45 @@ extension AMBCoreContext {
     }
 
     func configure() {
-        if let muted = optAppMuted() {
-            GADMobileAds.sharedInstance().applicationMuted = muted
-        }
-        if let volume = optAppVolume() {
-            GADMobileAds.sharedInstance().applicationVolume = volume
-        }
+           if let muted = optAppMuted() {
+               GADMobileAds.sharedInstance().applicationMuted = muted
+           }
+           if let volume = optAppVolume() {
+               GADMobileAds.sharedInstance().applicationVolume = volume
+           }
 
-        let requestConfiguration = GADMobileAds.sharedInstance().requestConfiguration
-        if let maxAdContentRating = optMaxAdContentRating() {
-            requestConfiguration.maxAdContentRating = maxAdContentRating
+           let requestConfiguration = GADMobileAds.sharedInstance().requestConfiguration
+           if let maxAdContentRating = optMaxAdContentRating() {
+               requestConfiguration.maxAdContentRating = maxAdContentRating
+           }
+           if let tag = optChildDirectedTreatmentTag() {
+                      requestConfiguration.tagForChildDirectedTreatment = NSNumber(value: tag)
+                  }
+           if let tag = optUnderAgeOfConsentTag() {
+                      requestConfiguration.tagForUnderAgeOfConsent = NSNumber(value: tag)
+                  }
+           if let testDevices = optTestDeviceIds() {
+               requestConfiguration.testDeviceIdentifiers = testDevices
+           }
+           if let sameAppKey = optBool("sameAppKey") {
+                      requestConfiguration.setPublisherFirstPartyIDEnabled(sameAppKey)
+                  }
+ if let
+        publisherFirstPartyIDEnabled = optBool("publisherFirstPartyIDEnabled") {
+            requestConfiguration.setPublisherFirstPartyIDEnabled(publisherFirstPartyIDEnabled)
         }
-        if let tag = optChildDirectedTreatmentTag() {
-            requestConfiguration.tag(forChildDirectedTreatment: tag)
-        }
-        if let tag = optUnderAgeOfConsentTag() {
-            requestConfiguration.tagForUnderAge(ofConsent: tag)
-        }
-        if let testDevices = optTestDeviceIds() {
-            requestConfiguration.testDeviceIdentifiers = testDevices
-        }
-        if let sameAppKey = optBool("sameAppKey") {
-            requestConfiguration.setSameAppKeyEnabled(sameAppKey)
-        }
-
-        resolve()
-    }
+           resolve()
+       }
 }
 
 class AMBCoreAd: NSObject {
-    static var ads = [Int: AMBCoreAd]()
+    static var ads = [String: AMBCoreAd]()
 
-    let id: Int
+    let id: String
     let adUnitId: String
     let adRequest: GADRequest
 
-    init(id: Int, adUnitId: String, adRequest: GADRequest) {
+    init(id: String, adUnitId: String, adRequest: GADRequest) {
         self.id = id
         self.adUnitId = adUnitId
         self.adRequest = adRequest

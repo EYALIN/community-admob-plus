@@ -118,7 +118,7 @@ export default [
       }
 
       const tasksPrefs = _.map(
-        {SwiftVersion: ctx.swiftVersion, 'deployment-target': '11.0'},
+        {SwiftVersion: ctx.swiftVersion, 'deployment-target': '12.0'},
         (expectedVersion, prefName) => {
           const title = `platform[name="ios"]/preference[name="${prefName}"]`;
           return {

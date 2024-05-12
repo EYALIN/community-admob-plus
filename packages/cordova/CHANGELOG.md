@@ -3,7 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.32.0](https://github.com/EYALIN/community-admob-plus/compare/admob-plus-cordova@1.31.0...admob-plus-cordova@1.32.0) (2024-05-11)
 
+### Features
+
+* **Admob SDK:** upgraded to 11.3.0
+* **Play services ads:** upgraded to 23.0.0
+* 
 # [1.31.1](https://github.com/EYALIN/community-admob-plus/compare/admob-plus-cordova@1.31.0...admob-plus-cordova@1.31.1) (2023-12-18)
 
 ### Features

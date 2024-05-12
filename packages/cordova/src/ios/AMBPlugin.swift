@@ -4,7 +4,7 @@
 import GoogleMobileAds
 
 @objc(AMBPlugin)
-class AMBPlugin: CDVPlugin, WKNavigationDelegate {
+class AMBPlugin: CDVPlugin {
     static func registerNativeAdViewProviders(_ providers: [String: AMBNativeAdViewProvider]) {
         AMBNativeAd.providers.merge(providers) {(_, new) in new}
     }
@@ -20,29 +20,13 @@ class AMBPlugin: CDVPlugin, WKNavigationDelegate {
 
         AMBContext.plugin = self
 
-        if let x = self.commandDelegate.settings["AdMobPlusWebViewAd".lowercased()] as? String,
-           x == "true" {
-            let webView = self.webViewEngine.engineWebView as! WKWebView
-            GADMobileAds.sharedInstance().register(webView)
-            // webView.reload()
-        }
-
         if let x = self.commandDelegate.settings["disableSDKCrashReporting".lowercased()] as? String,
            x == "true" {
             GADMobileAds.sharedInstance().disableSDKCrashReporting()
         }
     }
 
-    @objc func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        if navigationAction.sourceFrame == nil {
-            if let url = navigationAction.request.url, url.scheme == "http" || url.scheme == "https" {
-                UIApplication.shared.open(url)
-                decisionHandler(.cancel)
-                return
-            }
-        }
-        decisionHandler(.allow)
-    }
+
 
     @objc func ready(_ command: CDVInvokedUrlCommand) {
         readyCallbackId = command.callbackId
@@ -59,25 +43,7 @@ class AMBPlugin: CDVPlugin, WKNavigationDelegate {
 
     @objc func configRequest(_ command: CDVInvokedUrlCommand) {
         let ctx = AMBContext(command)
-        let requestConfiguration = GADMobileAds.sharedInstance().requestConfiguration
-
-        if let maxAdContentRating = ctx.optMaxAdContentRating() {
-            requestConfiguration.maxAdContentRating = maxAdContentRating
-        }
-
-        if let tag = ctx.optChildDirectedTreatmentTag() {
-            requestConfiguration.tag(forChildDirectedTreatment: tag)
-        }
-
-        if let tag = ctx.optUnderAgeOfConsentTag() {
-            requestConfiguration.tagForUnderAge(ofConsent: tag)
-        }
-
-        if let testDevices = ctx.optTestDeviceIds() {
-            requestConfiguration.testDeviceIdentifiers = testDevices
-        }
-
-        ctx.resolve()
+        ctx.configure()
     }
 
     @objc func requestTrackingAuthorization(_ command: CDVInvokedUrlCommand) {
@@ -96,14 +62,8 @@ class AMBPlugin: CDVPlugin, WKNavigationDelegate {
         let ctx = AMBContext(command)
 
         GADMobileAds.sharedInstance().start(completionHandler: { _ in
-            ctx.resolve(["version": GADMobileAds.sharedInstance().sdkVersion])
-        })
-
-        if let x = self.commandDelegate.settings["AdMobPlusWebViewAd".lowercased()] as? String,
-           x == "true" {
-            let webView = self.webViewEngine.engineWebView as! WKWebView
-            webView.navigationDelegate = self
-        }
+                    ctx.resolve(["version": GADGetStringFromVersionNumber(GADMobileAds.sharedInstance().versionNumber)])
+                    })
     }
 
     @objc func setAppMuted(_ command: CDVInvokedUrlCommand) {
@@ -153,7 +113,7 @@ class AMBPlugin: CDVPlugin, WKNavigationDelegate {
                 if ad != nil {
                     ctx.resolve()
                 } else {
-                    ctx.reject("fail to create ad: \(ctx.optId() ?? -1)")
+                    ctx.reject("fail to create ad: \(ctx.optId() ?? "-")")
                 }
             } else {
                 ctx.reject()
@@ -211,6 +171,17 @@ class AMBPlugin: CDVPlugin, WKNavigationDelegate {
 
         DispatchQueue.main.async {
             AMBBanner.config(ctx)
+        }
+    }
+
+    @objc func webviewGoto(_ command: CDVInvokedUrlCommand) {
+        let ctx = AMBContext(command)
+
+        DispatchQueue.main.async {
+            if let url = URL(string: ctx.optWebviewGoto()+"#from_webview_goto") {
+                let webView = self.webViewEngine.engineWebView as! WKWebView
+                webView.load(URLRequest(url: url))
+            }
         }
     }
 
