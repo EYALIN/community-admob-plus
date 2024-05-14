@@ -4,7 +4,7 @@ export { execAsync, AdSizeType, Events, NativeActions } from './generated'
 
 /** @internal */
 export type MobileAdOptions = {
-  id?: number
+  id?: string
   adUnitId: string
   contentUrl?: string
   keywords?: string[]
@@ -29,7 +29,7 @@ export class MobileAd<T extends MobileAdOptions = MobileAdOptions> {
   private static allAds: { [s: number]: MobileAd } = {}
   private static idCounter = 0
 
-  public readonly id: number
+  public readonly id: string
 
   protected readonly opts: T
   private _created = false
@@ -38,7 +38,7 @@ export class MobileAd<T extends MobileAdOptions = MobileAdOptions> {
   constructor(opts: T) {
     this.opts = opts
 
-    this.id = opts.id ?? MobileAd.nextId()
+    this.id = opts.id ?? opts.adUnitId
     MobileAd.allAds[this.id] = this
   }
 
