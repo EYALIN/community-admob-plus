@@ -77,8 +77,8 @@ public interface Context {
     }
 
     @Nullable
-    default Integer optId() {
-        return this.optInt("id");
+    default String optId() {
+        return this.optString("id");
     }
 
     @Nullable

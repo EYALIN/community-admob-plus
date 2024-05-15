@@ -33,7 +33,7 @@ public class Helper {
         this.adapter = adapter;
     }
 
-    public static Ad getAd(Integer id) {
+    public static Ad getAd(String id) {
         return ads.get(id);
     }
 
