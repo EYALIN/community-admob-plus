@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import admob.plus.core.Ad;
+
 import admob.plus.cordova.Generated.Actions;
 import admob.plus.cordova.ads.AdBase;
 import admob.plus.cordova.ads.WebViewAd;
@@ -244,38 +246,39 @@ public class AdMob extends CordovaPlugin implements Helper.Adapter {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        for (int i = 0; i < ads.size(); i++) {
-            AdBase ad = (AdBase) ads.valueAt(i);
-            ad.onConfigurationChanged(newConfig);
-        }
+         for (Map.Entry<String, Ad> entry : Helper.ads.entrySet()) {
+                    AdBase ad = (AdBase) entry.getValue();
+                    ad.onConfigurationChanged(newConfig);
+                }
     }
 
     @Override
     public void onPause(boolean multitasking) {
-        for (int i = 0; i < ads.size(); i++) {
-            AdBase ad = (AdBase) ads.valueAt(i);
-            ad.onPause(multitasking);
-        }
+    for (Map.Entry<String, Ad> entry : Helper.ads.entrySet()) {
+                        AdBase ad = (AdBase) entry.getValue();
+                        ad.onPause(multitasking);
+                    }
         super.onPause(multitasking);
     }
 
     @Override
     public void onResume(boolean multitasking) {
         super.onResume(multitasking);
-        for (int i = 0; i < ads.size(); i++) {
-            AdBase ad = (AdBase) ads.valueAt(i);
-            ad.onResume(multitasking);
-        }
+        for (Map.Entry<String, Ad> entry : Helper.ads.entrySet()) {
+                            AdBase ad = (AdBase) entry.getValue();
+                                ad.onResume(multitasking);
+                            }
+
     }
 
     @Override
     public void onDestroy() {
         readyCallbackContext = null;
+            for (Map.Entry<String, Ad> entry : Helper.ads.entrySet()) {
+                                AdBase ad = (AdBase) entry.getValue();
+                                ad.onDestroy();
+                            }
 
-        for (int i = 0; i < ads.size(); i++) {
-            AdBase ad = (AdBase) ads.valueAt(i);
-            ad.onDestroy();
-        }
 
         Banner.destroyParentView();
 

@@ -16,10 +16,10 @@ import java.util.Objects;
 import static admob.plus.core.Helper.ads;
 
 public abstract class Ad {
-    public final int id;
+    public final String id;
     public final String adUnitId;
 
-    public Ad(int id, @NonNull String adUnitId) {
+    public Ad(String id, @NonNull String adUnitId) {
         this.id = id;
         this.adUnitId = adUnitId;
         ads.put(id, this);

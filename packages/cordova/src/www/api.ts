@@ -26,7 +26,7 @@ export async function start() {
 export class MobileAd<T extends MobileAdOptions = MobileAdOptions> {
   public static readonly type: string = ''
 
-  private static allAds: { [s: number]: MobileAd } = {}
+  private static allAds: { [s: string]: MobileAd } = {}
   private static idCounter = 0
 
   public readonly id: string
@@ -42,20 +42,8 @@ export class MobileAd<T extends MobileAdOptions = MobileAdOptions> {
     MobileAd.allAds[this.id] = this
   }
 
-  public static getAdById(id: number) {
+  public static getAdById(id: string) {
     return this.allAds[id]
-  }
-
-  private static nextId() {
-    const storage = window.localStorage
-    const key = 'admob-ad-id-counter'
-    const value = storage.getItem(key)
-    if (value !== null) {
-      MobileAd.idCounter = Number(value)
-    }
-    MobileAd.idCounter += 1
-    storage.setItem(key, `${MobileAd.idCounter}`)
-    return MobileAd.idCounter
   }
 
   public get adUnitId() {
