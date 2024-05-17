@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Iterator;
 
 import admob.plus.core.Ad;
 
@@ -274,11 +275,12 @@ public class AdMob extends CordovaPlugin implements Helper.Adapter {
     @Override
     public void onDestroy() {
         readyCallbackContext = null;
-            for (Map.Entry<String, Ad> entry : Helper.ads.entrySet()) {
-                                AdBase ad = (AdBase) entry.getValue();
-                                ad.onDestroy();
-                            }
-
+        Iterator<Map.Entry<String, Ad>> iterator = Helper.ads.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Ad> entry = iterator.next();
+            AdBase ad = (AdBase) entry.getValue();
+            ad.onDestroy();
+        }
 
         Banner.destroyParentView();
 
