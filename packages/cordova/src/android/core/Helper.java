@@ -24,9 +24,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Helper {
-    public static final Map<String, Ad> ads = new HashMap<>();
+    public static final Map<String, Ad> ads = new ConcurrentHashMap<>();
 
     private final Adapter adapter;
 
