@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 2.6.2 (2024-07-20)
+
+
+### Features
+
+* update GoogleUserMessagingPlatform to 2.5.0
+
 # [2.6.0](https://github.com/admob-plus/admob-plus/compare/cordova-plugin-consent@2.3.2...cordova-plugin-consent@2.6.0) (2023-11-25)
 
 

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<plugin id="community-admob-plus-cordova" version="1.32.6"
+<plugin id="community-admob-plus-cordova" version="1.32.8"
     xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <name>admob-plus-cordova</name>
@@ -20,7 +20,7 @@
 
     <platform name="android">
         <preference name="APP_ID_ANDROID" default="ca-app-pub-xxx~yyy" />
-        <preference name="PLAY_SERVICES_VERSION" default="23.0.0" />
+        <preference name="PLAY_SERVICES_VERSION" default="23.2.0" />
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <activity android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" android:excludeFromRecents="true" android:name="com.google.android.gms.ads.AdActivity" android:noHistory="true" />
