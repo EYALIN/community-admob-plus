@@ -1,9 +1,10 @@
 import Foundation
 import GoogleMobileAds
+import UIKit
 
 protocol AMBNativeAdViewProvider: NSObjectProtocol {
-    func createView(_ nativeAd: GADNativeAd) -> UIView
-    // delegate
+    func createView(_ nativeAd: NativeAd) -> UIView
+    // delegate callbacks
     func didShow(_ ad: AMBNativeAd)
     func didHide(_ ad: AMBNativeAd)
 }
@@ -13,40 +14,51 @@ extension AMBNativeAdViewProvider {
     func didHide(_ ad: AMBNativeAd) {}
 }
 
-class AMBNativeAd: AMBAdBase, GADNativeAdLoaderDelegate, GADNativeAdDelegate {
+class AMBNativeAd: AMBAdBase, NativeAdLoaderDelegate, NativeAdDelegate {
     static var providers = [String: AMBNativeAdViewProvider]()
 
-    var mLoader: GADAdLoader!
-    let viewProvider: AMBNativeAdViewProvider
-    var mAd: GADNativeAd?
-    var ctxLoad: AMBContext?
+    private var mLoader: AdLoader!
+    private let viewProvider: AMBNativeAdViewProvider
+    private var mAd: NativeAd?
+    private var ctxLoad: AMBContext?
 
     lazy var view: UIView = {
         return viewProvider.createView(mAd!)
     }()
 
-    init(id: String, adUnitId: String, adRequest: GADRequest, viewProvider: AMBNativeAdViewProvider) {
+    init(
+        id: String,
+        adUnitId: String,
+        adRequest: Request,
+        viewProvider: AMBNativeAdViewProvider
+    ) {
         self.viewProvider = viewProvider
-
         super.init(id: id, adUnitId: adUnitId, adRequest: adRequest)
 
-        mLoader = GADAdLoader(adUnitID: adUnitId, rootViewController: plugin.viewController,
-                              adTypes: [.native], options: nil)
+        mLoader = AdLoader(
+          adUnitID: adUnitId,
+          rootViewController: plugin.viewController,
+          adTypes: [.native],
+          options: nil
+        )
         mLoader.delegate = self
     }
 
     convenience init?(_ ctx: AMBContext) {
-        let view = ctx.optString("view") ?? "default"
-        guard let id = ctx.optId(),
-              let adUnitId = ctx.optAdUnitID(),
-              let viewProvider = Self.providers[view]
+        let viewName = ctx.optString("view") ?? "default"
+        guard
+            let id = ctx.optId(),
+            let adUnitId = ctx.optAdUnitID(),
+            let provider = Self.providers[viewName]
         else {
             return nil
         }
-        self.init(id: id,
-                  adUnitId: adUnitId,
-                  adRequest: ctx.optGADRequest(),
-                  viewProvider: viewProvider)
+        self.init(
+          id: id,
+          adUnitId: adUnitId,
+          adRequest: ctx.optRequest(),
+          viewProvider: provider
+        )
     }
 
     override func load(_ ctx: AMBContext) {
@@ -55,25 +67,27 @@ class AMBNativeAd: AMBAdBase, GADNativeAdLoaderDelegate, GADNativeAdDelegate {
     }
 
     override func isLoaded() -> Bool {
-        if mLoader == nil {
-            return false
-        }
-        return !mLoader.isLoading
+        return mLoader != nil && !mLoader.isLoading
     }
 
     override func show(_ ctx: AMBContext) {
-        if let x = ctx.opt("x") as? Double,
-           let y = ctx.opt("y") as? Double,
-           let w = ctx.opt("width") as? Double,
-           let h = ctx.opt("height") as? Double {
+        if
+          let x = ctx.opt("x") as? Double,
+          let y = ctx.opt("y") as? Double,
+          let w = ctx.opt("width") as? Double,
+          let h = ctx.opt("height") as? Double
+        {
             view.frame = CGRect(x: x, y: y, width: w, height: h)
         }
 
-        if let rootView = plugin.viewController.view, view.superview != rootView {
-            rootView.addSubview(view)
+        if
+          let root = plugin.viewController.view,
+          view.superview != root
+        {
+            root.addSubview(view)
         }
-        view.isHidden = false
 
+        view.isHidden = false
         viewProvider.didShow(self)
     }
 
@@ -83,46 +97,51 @@ class AMBNativeAd: AMBAdBase, GADNativeAdLoaderDelegate, GADNativeAdDelegate {
         ctx.resolve()
     }
 
-    func adLoader(_ adLoader: GADAdLoader, didReceive nativeAd: GADNativeAd) {
+    // MARK: - NativeAdLoaderDelegate
+
+    func adLoader(_ adLoader: AdLoader, didReceive nativeAd: NativeAd) {
         mAd = nativeAd
         nativeAd.delegate = self
-        self.emit(AMBEvents.adLoad)
+        emit(AMBEvents.adLoad)
+
         if !adLoader.isLoading {
             ctxLoad?.resolve()
             ctxLoad = nil
         }
     }
 
-    func adLoader(_ adLoader: GADAdLoader, didFailToReceiveAdWithError error: Error) {
-        self.emit(AMBEvents.adLoadFail, error)
+    func adLoader(_ adLoader: AdLoader, didFailToReceiveAdWithError error: Error) {
+        emit(AMBEvents.adLoadFail, error)
+
         if !adLoader.isLoading {
-            ctxLoad?.reject(error)
+            ctxLoad?.reject(error.localizedDescription)
             ctxLoad = nil
         }
     }
 
-    func nativeAdDidRecordImpression(_ nativeAd: GADNativeAd) {
-        self.emit(AMBEvents.adImpression, nativeAd)
+    // MARK: - NativeAdDelegate
+
+    func nativeAdDidRecordImpression(_ nativeAd: NativeAd) {
+        emit(AMBEvents.adImpression, nativeAd)
     }
 
-    func nativeAdDidRecordClick(_ nativeAd: GADNativeAd) {
-        self.emit(AMBEvents.adClick, nativeAd)
+    func nativeAdDidRecordClick(_ nativeAd: NativeAd) {
+        emit(AMBEvents.adClick, nativeAd)
     }
 
-    func nativeAdWillPresentScreen(_ nativeAd: GADNativeAd) {
-        self.emit(AMBEvents.adShow, nativeAd)
+    func nativeAdWillPresentScreen(_ nativeAd: NativeAd) {
+        emit(AMBEvents.adShow, nativeAd)
     }
 
-    func nativeAdWillDismissScreen(_ nativeAd: GADNativeAd) {
-        // The native ad will dismiss a full screen view.
+    func nativeAdWillDismissScreen(_ nativeAd: NativeAd) {
+        // no-op
     }
 
-    func nativeAdDidDismissScreen(_ nativeAd: GADNativeAd) {
-        self.emit(AMBEvents.adDismiss, nativeAd)
+    func nativeAdDidDismissScreen(_ nativeAd: NativeAd) {
+        emit(AMBEvents.adDismiss, nativeAd)
     }
 
-    func nativeAdWillLeaveApplication(_ nativeAd: GADNativeAd) {
-        // The native ad will cause the application to become inactive and
-        // open a new application.
+    func nativeAdWillLeaveApplication(_ nativeAd: NativeAd) {
+        // no-op
     }
 }

@@ -18,10 +18,7 @@ class AMBContext: AMBCoreContext {
     }
 
     func optString(_ name: String, _ defaultValue: String) -> String {
-        if let v = opt(name) as? String {
-            return v
-        }
-        return defaultValue
+        return (opt(name) as? String) ?? defaultValue
     }
 
     func optStringArray(_ name: String) -> [String]? {
@@ -29,27 +26,26 @@ class AMBContext: AMBCoreContext {
     }
 
     func resolve() {
-        self.sendResult(CDVPluginResult(status: CDVCommandStatus_OK))
+        sendResult(CDVPluginResult(status: CDVCommandStatus_OK))
     }
 
     func resolve(_ msg: Bool) {
-        self.sendResult(CDVPluginResult(status: CDVCommandStatus_OK, messageAs: msg))
+        sendResult(CDVPluginResult(status: CDVCommandStatus_OK, messageAs: msg))
     }
 
     func resolve(_ msg: UInt) {
-        self.sendResult(CDVPluginResult(status: CDVCommandStatus_OK, messageAs: msg))
+        sendResult(CDVPluginResult(status: CDVCommandStatus_OK, messageAs: msg))
     }
 
     func resolve(_ data: [String: Any]) {
-        self.sendResult(CDVPluginResult(status: CDVCommandStatus_OK, messageAs: data))
+        sendResult(CDVPluginResult(status: CDVCommandStatus_OK, messageAs: data))
     }
 
     func reject(_ msg: String) {
-        self.sendResult(CDVPluginResult(status: CDVCommandStatus_ERROR, messageAs: msg))
+        sendResult(CDVPluginResult(status: CDVCommandStatus_ERROR, messageAs: msg))
     }
 
     static weak var plugin: AMBPlugin!
-
     let command: CDVInvokedUrlCommand
 
     init(_ command: CDVInvokedUrlCommand) {
@@ -81,12 +77,12 @@ class AMBContext: AMBCoreContext {
     }
 
     func optBackgroundColor() -> UIColor? {
-        if let bgColor = opt("backgroundColor") as? NSDictionary,
-           let r = bgColor["r"] as? CGFloat,
-           let g = bgColor["g"] as? CGFloat,
-           let b = bgColor["b"] as? CGFloat,
-           let a = bgColor["a"] as? CGFloat {
-            return UIColor(red: r / 255, green: g / 255, blue: b / 255, alpha: a / 255)
+        if let bg = opt("backgroundColor") as? NSDictionary,
+           let r = bg["r"] as? CGFloat,
+           let g = bg["g"] as? CGFloat,
+           let b = bg["b"] as? CGFloat,
+           let a = bg["a"] as? CGFloat {
+            return UIColor(red: r/255, green: g/255, blue: b/255, alpha: a/255)
         }
         return nil
     }
@@ -100,59 +96,52 @@ class AMBContext: AMBCoreContext {
     }
 
     // swiftlint:disable cyclomatic_complexity
-    func optAdSize() -> GADAdSize {
-        if let adSizeType = opt("size") as? Int {
-            switch adSizeType {
-            case 0:
-                return GADAdSizeBanner
-            case 1:
-                return GADAdSizeLargeBanner
-            case 2:
-                return GADAdSizeMediumRectangle
-            case 3:
-                return GADAdSizeFullBanner
-            case 4:
-                return GADAdSizeLeaderboard
+    func optAdSize() -> AdSize {
+        if let type = opt("size") as? Int {
+            switch type {
+            case 0: return AdSizeBanner
+            case 1: return AdSizeLargeBanner
+            case 2: return AdSizeMediumRectangle
+            case 3: return AdSizeFullBanner
+            case 4: return AdSizeLeaderboard
             default: break
             }
         }
-        if let adSizeDict = opt("size") as? NSDictionary {
-            if let adaptive = adSizeDict["adaptive"] as? String {
+        if let dict = opt("size") as? NSDictionary {
+            if let adaptive = dict["adaptive"] as? String {
                 var width = AMBHelper.frame.size.width
-                if let w = adSizeDict["width"] as? CGFloat {
+                if let w = dict["width"] as? CGFloat {
                     width = w
                 }
                 if adaptive == "inline",
-                    let maxHeight = adSizeDict["maxHeight"] as? CGFloat {
-                    return GADInlineAdaptiveBannerAdSizeWithWidthAndMaxHeight(width, maxHeight)
+                   let maxH = dict["maxHeight"] as? CGFloat {
+                    return inlineAdaptiveBanner(width: width, maxHeight: maxH)
                 } else {
-                    switch adSizeDict["orientation"] as? String {
+                    switch dict["orientation"] as? String {
                     case "portrait":
-                        return GADPortraitAnchoredAdaptiveBannerAdSizeWithWidth(width)
+                        return portraitAnchoredAdaptiveBanner(width: width)
                     case "landscape":
-                        return GADLandscapeAnchoredAdaptiveBannerAdSizeWithWidth(width)
+                        return landscapeAnchoredAdaptiveBanner(width: width)
                     default:
-                        return GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(width)
+                        return currentOrientationAnchoredAdaptiveBanner(width: width)
                     }
                 }
-            } else if let width = adSizeDict["width"] as? Int,
-                 let height = adSizeDict["height"] as? Int {
-                return GADAdSizeFromCGSize(CGSize(width: width, height: height))
+            } else if let w = dict["width"] as? Int,
+                      let h = dict["height"] as? Int {
+                return adSizeFor(cgSize: CGSize(width: w, height: h))
             }
         }
-        return GADAdSizeBanner
+        return AdSizeBanner
     }
     // swiftlint:enable cyclomatic_complexity
 
-    func optGADServerSideVerificationOptions() -> GADServerSideVerificationOptions? {
-        guard let ssv = opt("serverSideVerification") as? NSDictionary
-        else {
+    func optGADServerSideVerificationOptions() -> ServerSideVerificationOptions? {
+        guard let ssv = opt("serverSideVerification") as? NSDictionary else {
             return nil
         }
-
-        let options = GADServerSideVerificationOptions.init()
-        if let customData = ssv.value(forKey: "customData") as? String {
-            options.customRewardString = customData
+        let options = ServerSideVerificationOptions()
+        if let custom = ssv.value(forKey: "customData") as? String {
+            options.customRewardText = custom
         }
         if let userId = ssv.value(forKey: "userId") as? String {
             options.userIdentifier = userId
@@ -164,7 +153,7 @@ class AMBContext: AMBCoreContext {
         return command.argument(at: 0) as! String
     }
 
-    func sendResult(_ message: CDVPluginResult?) {
-        self.commandDelegate.send(message, callbackId: command.callbackId)
+    private func sendResult(_ result: CDVPluginResult?) {
+        commandDelegate.send(result, callbackId: command.callbackId)
     }
 }

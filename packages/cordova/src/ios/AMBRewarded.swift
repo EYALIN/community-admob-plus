@@ -1,62 +1,89 @@
 import GoogleMobileAds
 
-class AMBRewarded: AMBAdBase, GADFullScreenContentDelegate {
-    var mAd: GADRewardedAd?
+class AMBRewarded: AMBAdBase, FullScreenContentDelegate {
+    private var mAd: RewardedAd?
 
     deinit {
         clear()
     }
 
     override func isLoaded() -> Bool {
-        return self.mAd != nil
+        return mAd != nil
     }
 
     override func load(_ ctx: AMBContext) {
         clear()
 
-        GADRewardedAd.load(withAdUnitID: adUnitId, request: adRequest, completionHandler: { ad, error in
-            if error != nil {
-                self.emit(AMBEvents.adLoadFail, error!)
+        // Use the new Swift signature: load(with:request:) { … }
+        RewardedAd.load(
+            with: adUnitId,
+            request: adRequest
+        ) { [weak self] ad, error in
+            guard let self = self else { return }
 
-                ctx.reject(error!)
+            if let error = error {
+                self.emit(AMBEvents.adLoadFail, error)
+                ctx.reject(error)
                 return
             }
 
-            self.mAd = ad
-            ad?.fullScreenContentDelegate = self
-            ad?.serverSideVerificationOptions = ctx.optGADServerSideVerificationOptions()
+            guard let rewardedAd = ad else {
+                let err = NSError(
+                    domain: "AMBRewarded",
+                    code: -1,
+                    userInfo: [NSLocalizedDescriptionKey: "Failed to load rewarded ad"]
+                )
+                self.emit(AMBEvents.adLoadFail, err)
+                ctx.reject(err)
+                return
+            }
 
+            self.mAd = rewardedAd
+            rewardedAd.fullScreenContentDelegate = self
+            rewardedAd.serverSideVerificationOptions = ctx.optGADServerSideVerificationOptions()
             self.emit(AMBEvents.adLoad)
-
             ctx.resolve()
-        })
+        }
     }
 
     override func show(_ ctx: AMBContext) {
-        mAd?.present(fromRootViewController: plugin.viewController, userDidEarnRewardHandler: {
-            let reward = self.mAd!.adReward
+        guard let ad = mAd else {
+            ctx.reject("Rewarded ad not ready")
+            return
+        }
+
+        // Use the new Swift signature: present(from:) { … }
+        ad.present(from: plugin.viewController) {
+            let reward = ad.adReward
             self.emit(AMBEvents.adReward, reward)
-        })
+        }
         ctx.resolve()
     }
 
-    func adDidRecordImpression(_ ad: GADFullScreenPresentingAd) {
-        self.emit(AMBEvents.adImpression)
+    // MARK: - FullScreenContentDelegate
+
+    func adDidRecordImpression(_ ad: FullScreenPresentingAd) {
+        emit(AMBEvents.adImpression)
     }
 
-    func ad(_ ad: GADFullScreenPresentingAd, didFailToPresentFullScreenContentWithError error: Error) {
+    func ad(
+        _ ad: FullScreenPresentingAd,
+        didFailToPresentFullScreenContentWithError error: Error
+    ) {
         clear()
-        self.emit(AMBEvents.adShowFail, error)
+        emit(AMBEvents.adShowFail, error)
     }
 
-    func adWillPresentFullScreenContent(_ ad: GADFullScreenPresentingAd) {
-        self.emit(AMBEvents.adShow)
+    func adWillPresentFullScreenContent(_ ad: FullScreenPresentingAd) {
+        emit(AMBEvents.adShow)
     }
 
-    func adDidDismissFullScreenContent(_ ad: GADFullScreenPresentingAd) {
+    func adDidDismissFullScreenContent(_ ad: FullScreenPresentingAd) {
         clear()
-        self.emit(AMBEvents.adDismiss)
+        emit(AMBEvents.adDismiss)
     }
+
+    // MARK: - Private Helpers
 
     private func clear() {
         mAd?.fullScreenContentDelegate = nil

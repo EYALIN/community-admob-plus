@@ -1,7 +1,7 @@
 import UserMessagingPlatform
 
 class CSNContext {
-    static var forms = [Int: UMPConsentForm]()
+    static var forms = [Int: ConsentForm]()
     static weak var plugin: CSNConsent!
 
     let command: CDVInvokedUrlCommand
@@ -34,16 +34,16 @@ class CSNContext {
         return opt("id") as? Int
     }
 
-    func optForm() -> UMPConsentForm? {
+    func optForm() -> ConsentForm? {
         if let id = optId() {
             return CSNContext.forms[id]
         }
         return nil
     }
 
-    func optDebugGeography() -> UMPDebugGeography? {
+    func optDebugGeography() -> DebugGeography? {
         if let value = opt("debugGeography") as? Int {
-            return UMPDebugGeography(rawValue: value)
+            return DebugGeography(rawValue: value)
         }
         return nil
     }
@@ -55,8 +55,8 @@ class CSNContext {
         return nil
     }
 
-    func optUMPDebugSettings() -> UMPDebugSettings {
-        let debugSettings = UMPDebugSettings()
+    func optDebugSettings() -> DebugSettings {
+        let debugSettings = DebugSettings()
 
         if let debugGeography = optDebugGeography() {
             debugSettings.geography = debugGeography
@@ -69,14 +69,14 @@ class CSNContext {
         return debugSettings
     }
 
-    func optUMPRequestParameters() -> UMPRequestParameters {
-        let parameters = UMPRequestParameters()
+    func optRequestParameters() -> RequestParameters {
+        let parameters = RequestParameters()
 
         if let tagForUnderAgeOfConsent = opt("tagForUnderAgeOfConsent") as? Bool {
-            parameters.tagForUnderAgeOfConsent = tagForUnderAgeOfConsent
+            parameters.isTaggedForUnderAgeOfConsent = tagForUnderAgeOfConsent
         }
 
-        parameters.debugSettings = optUMPDebugSettings()
+        parameters.debugSettings = optDebugSettings()
 
         return parameters
     }

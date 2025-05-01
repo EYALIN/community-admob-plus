@@ -1,5 +1,5 @@
 #if canImport(AppTrackingTransparency)
-    import AppTrackingTransparency
+import AppTrackingTransparency
 #endif
 import UserMessagingPlatform
 
@@ -9,7 +9,6 @@ class CSNConsent: CDVPlugin {
 
     override func pluginInitialize() {
         super.pluginInitialize()
-
         CSNContext.plugin = self
     }
 
@@ -20,39 +19,43 @@ class CSNConsent: CDVPlugin {
 
     @objc func ready(_ command: CDVInvokedUrlCommand) {
         readyCallbackId = command.callbackId
-
         self.emit(eventType: CSNEvents.ready)
     }
+
     @objc func canRequestAds(_ command: CDVInvokedUrlCommand) {
         let ctx = CSNContext(command)
-        ctx.success(UMPConsentInformation.sharedInstance.canRequestAds)
+        ctx.success(ConsentInformation.shared.canRequestAds)
     }
 
     @objc func privacyOptionsRequirementStatus(_ command: CDVInvokedUrlCommand) {
         let ctx = CSNContext(command)
-        ctx.success(UMPConsentInformation.sharedInstance.privacyOptionsRequirementStatus.rawValue)
+        ctx.success(ConsentInformation.shared.privacyOptionsRequirementStatus.rawValue)
     }
 
     @objc func loadAndShowIfRequired(_ command: CDVInvokedUrlCommand) {
         let ctx = CSNContext(command)
-        UMPConsentForm.loadAndPresentIfRequired(from: self.viewController) {
-            [weak self] loadAndPresentError in
-            guard self != nil else { return ctx.success() }
+        ConsentForm.loadAndPresentIfRequired(from: self.viewController) { [weak self] loadAndPresentError in
+            guard self != nil else {
+                return ctx.success()
+            }
 
             if let consentError = loadAndPresentError {
                 ctx.error(consentError)
                 return
             }
+
             ctx.success()
         }
     }
 
     @objc func showPrivacyOptionsForm(_ command: CDVInvokedUrlCommand) {
         let ctx = CSNContext(command)
-        UMPConsentForm.presentPrivacyOptionsForm(from: self.viewController) {
-            [weak self] formError in
-            guard self != nil, let formError else { return  ctx.success() }
-            ctx.error(formError)
+        ConsentForm.presentPrivacyOptionsForm(from: self.viewController) { [weak self] formError in
+            guard self != nil, formError == nil else {
+                ctx.error(formError)
+                return
+            }
+            ctx.success()
         }
     }
 
@@ -70,9 +73,9 @@ class CSNConsent: CDVPlugin {
         let ctx = CSNContext(command)
 
         if #available(iOS 14, *) {
-            ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
+            ATTrackingManager.requestTrackingAuthorization { status in
                 ctx.success(status.rawValue)
-            })
+            }
         } else {
             ctx.success(false)
         }
@@ -81,55 +84,55 @@ class CSNConsent: CDVPlugin {
     @objc func requestInfoUpdate(_ command: CDVInvokedUrlCommand) {
         let ctx = CSNContext(command)
 
-        UMPConsentInformation.sharedInstance.requestConsentInfoUpdate(
-            with: ctx.optUMPRequestParameters(),
+        ConsentInformation.shared.requestConsentInfoUpdate(
+            with: ctx.optRequestParameters(),
             completionHandler: { error in
-              if error != nil {
-                ctx.error(error!)
-              } else {
-                ctx.success()
-              }
-            })
+                if let error = error {
+                    ctx.error(error)
+                } else {
+                    ctx.success()
+                }
+            }
+        )
     }
 
     @objc func getFormStatus(_ command: CDVInvokedUrlCommand) {
         let ctx = CSNContext(command)
-        ctx.success(UMPConsentInformation.sharedInstance.formStatus.rawValue)
+        ctx.success(ConsentInformation.shared.formStatus.rawValue)
     }
 
     @objc func getConsentStatus(_ command: CDVInvokedUrlCommand) {
         let ctx = CSNContext(command)
-        ctx.success(UMPConsentInformation.sharedInstance.consentStatus.rawValue)
+        ctx.success(ConsentInformation.shared.consentStatus.rawValue)
     }
 
     @objc func loadForm(_ command: CDVInvokedUrlCommand) {
         let ctx = CSNContext(command)
 
-        UMPConsentForm.load(
-            completionHandler: { form, loadError in
-              if loadError != nil {
-                ctx.error(loadError!)
-              } else {
+        ConsentForm.load { form, loadError in
+            if let loadError = loadError {
+                ctx.error(loadError)
+            } else if let form = form {
                 let id = form.hashValue % (2 << 30)
                 CSNContext.forms[id] = form
                 ctx.success(id)
-              }
-            })
+            } else {
+                ctx.error("Consent form is nil")
+            }
+        }
     }
 
     @objc func showForm(_ command: CDVInvokedUrlCommand) {
         let ctx = CSNContext(command)
 
         if let form = ctx.optForm() {
-            form.present(
-                from: self.viewController,
-                completionHandler: { dismissError in
-                    if dismissError != nil {
-                        ctx.error(dismissError!)
-                    } else {
-                        ctx.success()
-                    }
-                })
+            form.present(from: self.viewController) { dismissError in
+                if let dismissError = dismissError {
+                    ctx.error(dismissError)
+                } else {
+                    ctx.success()
+                }
+            }
         } else {
             ctx.error("Form not found")
         }
@@ -137,7 +140,7 @@ class CSNConsent: CDVPlugin {
 
     @objc func reset(_ command: CDVInvokedUrlCommand) {
         let ctx = CSNContext(command)
-        UMPConsentInformation.sharedInstance.reset()
+        ConsentInformation.shared.reset()
         ctx.success()
     }
 

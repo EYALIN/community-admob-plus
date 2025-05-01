@@ -1,60 +1,85 @@
 import GoogleMobileAds
 
-class AMBInterstitial: AMBAdBase, GADFullScreenContentDelegate {
-    var mAd: GADInterstitialAd?
+class AMBInterstitial: AMBAdBase, FullScreenContentDelegate {
+    private var mAd: InterstitialAd?
 
     deinit {
         clear()
     }
 
     override func isLoaded() -> Bool {
-        return self.mAd != nil
+        return mAd != nil
     }
 
     override func load(_ ctx: AMBContext) {
         clear()
 
-        GADInterstitialAd.load(
-            withAdUnitID: adUnitId,
-            request: adRequest,
-            completionHandler: { ad, error in
-                if error != nil {
-                    self.emit(AMBEvents.adLoadFail, error!)
-                    ctx.reject(error!)
-                    return
-                }
+        // New Swift signature: load(with:request:) { … }
+        InterstitialAd.load(
+            with: adUnitId,
+            request: adRequest
+        ) { [weak self] ad, error in
+            guard let self = self else { return }
 
-                self.mAd = ad
-                ad?.fullScreenContentDelegate = self
+            if let error = error {
+                self.emit(AMBEvents.adLoadFail, error)
+                ctx.reject(error)
+                return
+            }
 
-                self.emit(AMBEvents.adLoad)
+            guard let interstitial = ad else {
+                let err = NSError(
+                    domain: "AMBInterstitial",
+                    code: -1,
+                    userInfo: [NSLocalizedDescriptionKey: "Failed to load interstitial ad"]
+                )
+                self.emit(AMBEvents.adLoadFail, err)
+                ctx.reject(err)
+                return
+            }
 
-                ctx.resolve()
-         })
+            self.mAd = interstitial
+            interstitial.fullScreenContentDelegate = self
+            self.emit(AMBEvents.adLoad)
+            ctx.resolve()
+        }
     }
 
     override func show(_ ctx: AMBContext) {
-        mAd?.present(fromRootViewController: plugin.viewController)
+        guard let ad = mAd else {
+            ctx.reject("Interstitial ad not ready")
+            return
+        }
+
+        // New Swift signature: present(from:) with no reward handler
+        ad.present(from: plugin.viewController)
         ctx.resolve()
     }
 
-    func adDidRecordImpression(_ ad: GADFullScreenPresentingAd) {
-        self.emit(AMBEvents.adImpression)
+    // MARK: - FullScreenContentDelegate
+
+    func adDidRecordImpression(_ ad: FullScreenPresentingAd) {
+        emit(AMBEvents.adImpression)
     }
 
-    func ad(_ ad: GADFullScreenPresentingAd, didFailToPresentFullScreenContentWithError error: Error) {
+    func ad(
+        _ ad: FullScreenPresentingAd,
+        didFailToPresentFullScreenContentWithError error: Error
+    ) {
         clear()
-        self.emit(AMBEvents.adShowFail, error)
+        emit(AMBEvents.adShowFail, error)
     }
 
-    func adWillPresentFullScreenContent(_ ad: GADFullScreenPresentingAd) {
-        self.emit(AMBEvents.adShow)
+    func adWillPresentFullScreenContent(_ ad: FullScreenPresentingAd) {
+        emit(AMBEvents.adShow)
     }
 
-    func adDidDismissFullScreenContent(_ ad: GADFullScreenPresentingAd) {
+    func adDidDismissFullScreenContent(_ ad: FullScreenPresentingAd) {
         clear()
-        self.emit(AMBEvents.adDismiss)
+        emit(AMBEvents.adDismiss)
     }
+
+    // MARK: - Helpers
 
     private func clear() {
         mAd?.fullScreenContentDelegate = nil
