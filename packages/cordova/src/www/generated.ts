@@ -74,7 +74,9 @@ export enum AdSizeType {
   FULL_BANNER,
   LEADERBOARD,
   SMART_BANNER,
+  ANCHORED_ADAPTIVE, // Adaptive banner size based on screen width & orientation
 }
+
 
 export const execAsync = (action: NativeActions, args?: any[]) => {
   return new Promise((resolve, reject) => {

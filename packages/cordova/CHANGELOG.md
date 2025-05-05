@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.33.1 (2025-05-05)
+
+### Bug Fixes
+
+* **Fix Android compilation errors**
+
+
 # 1.33.0 (2025-05-01)
 
 ### Features

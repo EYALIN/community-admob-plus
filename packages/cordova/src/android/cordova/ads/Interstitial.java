@@ -23,7 +23,6 @@ public class Interstitial extends AdBase {
     @Override
     public void onDestroy() {
         clear();
-
         super.onDestroy();
     }
 
@@ -42,7 +41,7 @@ public class Interstitial extends AdBase {
                     }
 
                     @Override
-                    public void onAdFailedToShowFullScreenContent(AdError adError) {
+                    public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
                         emit(Events.AD_SHOW_FAIL, adError);
                     }
 
@@ -66,7 +65,7 @@ public class Interstitial extends AdBase {
             public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                 mAd = null;
                 emit(Events.AD_LOAD_FAIL, loadAdError);
-                ctx.reject(loadAdError.toString());
+                ctx.reject(loadAdError.getCode() + ": " + loadAdError.getMessage());
             }
         });
     }

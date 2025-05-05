@@ -64,13 +64,15 @@ const Events = Object.keys(EventsUnsorted)
   );
 
 const AdSizeTypes = [
-  'BANNER',
-  'LARGE_BANNER',
-  'MEDIUM_RECTANGLE',
-  'FULL_BANNER',
-  'LEADERBOARD',
-  'SMART_BANNER',
+    'BANNER',
+    'LARGE_BANNER',
+    'MEDIUM_RECTANGLE',
+    'FULL_BANNER',
+    'LEADERBOARD',
+    'SMART_BANNER',
+    'ANCHORED_ADAPTIVE', // Adaptive banner that adjusts height based on screen width
 ];
+
 
 function buildJava(): string {
   const linesActions = renderJavaContants(Actions);

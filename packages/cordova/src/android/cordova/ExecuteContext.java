@@ -138,7 +138,7 @@ public class ExecuteContext implements Context {
             return AdSize.SMART_BANNER;
         }
         JSONObject adSizeObj = opts.optJSONObject(name);
-        AdSize adSize = AdSizeType.getAdSize(opts.optInt(name));
+        AdSize adSize = AdSizeType.getAdSize(opts.optInt(name), getActivity());
         if (adSizeObj == null) {
             if (adSize != null) {
                 return adSize;

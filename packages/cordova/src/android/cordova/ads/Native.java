@@ -24,7 +24,7 @@ import static admob.plus.core.Helper.dpToPx;
 
 public class Native extends AdBase {
     public static final String VIEW_DEFAULT_KEY = "default";
-    public static final Map<String, ViewProvider> providers = new HashMap<String, ViewProvider>();
+    public static final Map<String, ViewProvider> providers = new HashMap<>();
 
     private final AdRequest mAdRequest;
     private final ViewProvider viewProvider;
@@ -37,25 +37,24 @@ public class Native extends AdBase {
 
         mAdRequest = ctx.optAdRequest();
         String key = ctx.optString("view");
-        if (key == null || "".equals(key)) {
+        if (key == null || key.isEmpty()) {
             key = VIEW_DEFAULT_KEY;
         }
         viewProvider = providers.get(key);
         if (viewProvider == null) {
-            throw new RuntimeException("cannot find viewProvider: " + key);
+            throw new RuntimeException("Cannot find viewProvider: " + key);
         }
     }
 
     @Override
     public void onDestroy() {
         clear();
-
         super.onDestroy();
     }
 
     @Override
     public boolean isLoaded() {
-        return mLoader != null && !mLoader.isLoading();
+        return mAd != null;
     }
 
     @Override
@@ -64,46 +63,58 @@ public class Native extends AdBase {
 
         mLoader = new AdLoader.Builder(getActivity(), adUnitId)
                 .forNativeAd(nativeAd -> {
+                    // Destroy any existing ad before replacing it
+                    if (mAd != null) {
+                        mAd.destroy();
+                    }
                     mAd = nativeAd;
                 })
                 .withAdListener(new AdListener() {
                     @Override
                     public void onAdFailedToLoad(LoadAdError adError) {
                         emit(Events.AD_LOAD_FAIL, adError);
-                        if (isLoaded()) {
-                            ctx.reject(adError.toString());
-                        }
+                        mAd = null;
+                        ctx.reject(adError.getCode() + ": " + adError.getMessage());
                     }
 
-                    public void onAdClosed() {
-                        emit(Events.AD_DISMISS);
+                    @Override
+                    public void onAdLoaded() {
+                        emit(Events.AD_LOAD);
+                        ctx.resolve();
                     }
 
+                    @Override
                     public void onAdOpened() {
                         emit(Events.AD_SHOW);
                     }
 
-                    public void onAdLoaded() {
-                        emit(Events.AD_LOAD);
-                        if (isLoaded()) {
-                            ctx.resolve();
-                        }
+                    @Override
+                    public void onAdClosed() {
+                        emit(Events.AD_DISMISS);
                     }
 
+                    @Override
                     public void onAdClicked() {
                         emit(Events.AD_CLICK);
                     }
 
+                    @Override
                     public void onAdImpression() {
                         emit(Events.AD_IMPRESSION);
                     }
                 })
                 .build();
+
         mLoader.loadAd(mAdRequest);
     }
 
     @Override
     public void show(Context ctx) {
+        if (mAd == null) {
+            ctx.reject("Native ad not loaded");
+            return;
+        }
+
         if (view == null) {
             view = viewProvider.createView(mAd);
             Objects.requireNonNull(getContentView()).addView(view);
@@ -112,6 +123,7 @@ public class Native extends AdBase {
         view.setVisibility(View.VISIBLE);
         view.setX((float) dpToPx(ctx.optDouble("x", 0.0)));
         view.setY((float) dpToPx(ctx.optDouble("y", 0.0)));
+
         ViewGroup.LayoutParams params = view.getLayoutParams();
         params.width = (int) dpToPx(ctx.optDouble("width", 0.0));
         params.height = (int) dpToPx(ctx.optDouble("height", 0.0));
@@ -153,10 +165,7 @@ public class Native extends AdBase {
         @NonNull
         View createView(NativeAd nativeAd);
 
-        default void didShow(@NonNull Native ad) {
-        }
-
-        default void didHide(@NonNull Native ad) {
-        }
+        default void didShow(@NonNull Native ad) {}
+        default void didHide(@NonNull Native ad) {}
     }
 }

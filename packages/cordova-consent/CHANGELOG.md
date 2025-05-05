@@ -1,7 +1,13 @@
 # Change Log
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# 2.7.1 (2025-05-05)
+
+### Bug Fixes
+
+* **Fix Android compilation errors**
+
+
 
 # 2.7.0 (2025-05-01)
 ### Features

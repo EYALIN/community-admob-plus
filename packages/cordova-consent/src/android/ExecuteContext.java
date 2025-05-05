@@ -26,20 +26,21 @@ public class ExecuteContext {
     }
 
     public int optId() {
-        return opts.optInt("id");
+        return opts != null ? opts.optInt("id") : -1;
     }
 
     public ConsentRequestParameters optConsentRequestParameters() {
         ConsentRequestParameters.Builder builder = new ConsentRequestParameters.Builder();
-        if (this.opts == null) {
-            return builder.build();
-        }
 
-        if (this.opts.has("tagForUnderAgeOfConsent")) {
-            builder.setTagForUnderAgeOfConsent(this.opts.optBoolean("tagForUnderAgeOfConsent"));
-        }
+        if (opts != null) {
+            if (opts.has("tagForUnderAgeOfConsent")) {
+                builder.setTagForUnderAgeOfConsent(opts.optBoolean("tagForUnderAgeOfConsent"));
+            }
 
-        builder.setConsentDebugSettings(optConsentDebugSettings());
+            if (opts.has("debugGeography") || opts.has("testDeviceIds")) {
+                builder.setConsentDebugSettings(optConsentDebugSettings());
+            }
+        }
 
         return builder.build();
     }
@@ -47,16 +48,22 @@ public class ExecuteContext {
     public ConsentDebugSettings optConsentDebugSettings() {
         ConsentDebugSettings.Builder builder = new ConsentDebugSettings.Builder(getActivity());
 
+        if (opts == null) {
+            return builder.build();
+        }
+
         if (opts.has("debugGeography")) {
             builder.setDebugGeography(opts.optInt("debugGeography"));
         }
 
         if (opts.has("testDeviceIds")) {
             JSONArray ids = opts.optJSONArray("testDeviceIds");
-            for (int i = 0; i < Objects.requireNonNull(ids).length(); i++) {
-                String testDeviceId = ids.optString(i);
-                if (testDeviceId != null) {
-                    builder.addTestDeviceHashedId(testDeviceId);
+            if (ids != null) {
+                for (int i = 0; i < ids.length(); i++) {
+                    String testDeviceId = ids.optString(i);
+                    if (testDeviceId != null && !testDeviceId.isEmpty()) {
+                        builder.addTestDeviceHashedId(testDeviceId);
+                    }
                 }
             }
         }

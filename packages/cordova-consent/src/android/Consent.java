@@ -23,15 +23,14 @@ import cordova.plugin.consent.Generated.Actions;
 import cordova.plugin.consent.Generated.ConsentStatus;
 
 public class Consent extends CordovaPlugin {
-    private static final SparseArray<ConsentForm> forms = new SparseArray<ConsentForm>();
-    private final ArrayList<PluginResult> eventQueue = new ArrayList<PluginResult>();
+    private static final SparseArray<ConsentForm> forms = new SparseArray<>();
+    private final ArrayList<PluginResult> eventQueue = new ArrayList<>();
     private final String TAG = this.getClass().getSimpleName();
     private CallbackContext readyCallbackContext = null;
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
-
         ExecuteContext.plugin = this;
     }
 
@@ -59,13 +58,13 @@ public class Consent extends CordovaPlugin {
                 getConsentInformation().reset();
                 callbackContext.success();
                 break;
-           case Actions.PRIVACY_OPTIONS_REQUIREMENT_STATUS:
+            case Actions.PRIVACY_OPTIONS_REQUIREMENT_STATUS:
                 return executePrivacyOptionsRequirementStatus(ctx);
-           case Actions.CAN_REQUEST_ADS:
+            case Actions.CAN_REQUEST_ADS:
                 return executeCanRequestAds(ctx);
-           case Actions.LOAD_AND_SHOW_IF_REQUIRED:
+            case Actions.LOAD_AND_SHOW_IF_REQUIRED:
                 return executeLoadAndShowIfRequired(ctx);
-           case Actions.SHOW_PRIVACY_OPTIONS_FORM:
+            case Actions.SHOW_PRIVACY_OPTIONS_FORM:
                 return executeShowPrivacyOptionsForm(ctx);
             default:
                 return false;
@@ -73,8 +72,6 @@ public class Consent extends CordovaPlugin {
 
         return true;
     }
-
-
 
     private int getConsentStatus() {
         int status = getConsentInformation().getConsentStatus();
@@ -109,74 +106,74 @@ public class Consent extends CordovaPlugin {
                 cordova.getActivity(),
                 params,
                 ctx.callbackContext::success,
-                formError -> ctx.callbackContext.error(formError.getMessage()));
-
+                formError -> ctx.callbackContext.error(formError.getMessage())
+        );
         return true;
     }
+
     private boolean executePrivacyOptionsRequirementStatus(ExecuteContext ctx) {
-        ConsentRequestParameters params = ctx.optConsentRequestParameters();
         ConsentInformation consentInformation = getConsentInformation();
-
-        Integer status = consentInformation.getPrivacyOptionsRequirementStatus().ordinal();
-                Log.d(TAG + "privacy status", status.toString());
-                Log.d(TAG + "privacy status", consentInformation.getPrivacyOptionsRequirementStatus().toString());
-
-        ctx.callbackContext.success(consentInformation.getPrivacyOptionsRequirementStatus().toString());
+        String status = consentInformation.getPrivacyOptionsRequirementStatus().name();
+        Log.d(TAG, "privacy status: " + status);
+        ctx.callbackContext.success(status);
         return true;
     }
 
-  private boolean executeCanRequestAds(ExecuteContext ctx) {
-       ConsentRequestParameters params = ctx.optConsentRequestParameters();
-                       ConsentInformation consentInformation = getConsentInformation();
-        String a = String.valueOf(consentInformation.canRequestAds());
-                ctx.callbackContext.success(a);
-                       return true;
+    private boolean executeCanRequestAds(ExecuteContext ctx) {
+        ConsentInformation consentInformation = getConsentInformation();
+        String result = String.valueOf(consentInformation.canRequestAds());
+        ctx.callbackContext.success(result);
+        return true;
     }
-     private boolean executeLoadAndShowIfRequired(ExecuteContext ctx) {
+
+    private boolean executeLoadAndShowIfRequired(ExecuteContext ctx) {
         cordova.getActivity().runOnUiThread(() -> {
-
-             UserMessagingPlatform.loadAndShowConsentFormIfRequired(
-                        cordova.getActivity(),
-                       formError -> {
-                                       if (formError != null) {
-                                           ctx.callbackContext.error(formError.getMessage());
-                                       } else {
-                                           ctx.callbackContext.success("success");
-                                       }
-                                   }
-                      );
+            UserMessagingPlatform.loadAndShowConsentFormIfRequired(
+                cordova.getActivity(),
+                formError -> {
+                    if (formError != null) {
+                        ctx.callbackContext.error(formError.getErrorCode() + " " + formError.getMessage());
+                    } else {
+                        ctx.callbackContext.success("success");
+                    }
+                }
+            );
         });
+        return true;
+    }
 
-                            return true;
 
-        }
 
     private boolean executeShowPrivacyOptionsForm(ExecuteContext ctx) {
         cordova.getActivity().runOnUiThread(() -> {
-
-        UserMessagingPlatform.showPrivacyOptionsForm(
-            cordova.getActivity(),
-            formError -> {
-                if (formError != null) {
-                    ctx.callbackContext.error(formError.getErrorCode() + " " + formError.getMessage());
-                } else {
-                    ctx.callbackContext.success("success");
-                }
-            }
-        ); // Remove the semicolon here
-});
+            UserMessagingPlatform.showPrivacyOptionsForm(
+                    cordova.getActivity(),
+                    formError -> {
+                        if (formError != null) {
+                            ctx.callbackContext.error(formError.getErrorCode() + " " + formError.getMessage());
+                        } else {
+                            ctx.callbackContext.success("success");
+                        }
+                    }
+            );
+        });
         return true;
     }
 
     private boolean executeLoadForm(ExecuteContext ctx) {
         cordova.getActivity().runOnUiThread(() -> {
             UserMessagingPlatform.loadConsentForm(
-                    cordova.getActivity(),
-                    consentForm -> {
-                        forms.put(consentForm.hashCode(), consentForm);
-                        ctx.callbackContext.success(consentForm.hashCode());
-                    },
-                    formError -> ctx.callbackContext.error(formError.getMessage())
+                cordova.getActivity(),
+                consentForm -> {
+                    int id = consentForm.hashCode();
+                    forms.put(id, consentForm);
+                    ctx.callbackContext.success(id);
+                },
+                formError -> {
+                    if (formError != null) {
+                        ctx.callbackContext.error(formError.getErrorCode() + " " + formError.getMessage());
+                    }
+                }
             );
         });
         return true;
@@ -184,14 +181,20 @@ public class Consent extends CordovaPlugin {
 
     private boolean executeShowForm(ExecuteContext ctx) {
         final ConsentForm consentForm = forms.get(ctx.optId());
+        if (consentForm == null) {
+            ctx.callbackContext.error("Consent form not found or already used.");
+            return true;
+        }
+
         cordova.getActivity().runOnUiThread(() -> {
             consentForm.show(
                     cordova.getActivity(),
                     formError -> {
+                        forms.remove(ctx.optId());
                         if (formError == null) {
                             ctx.callbackContext.success();
                         } else {
-                            ctx.callbackContext.error(formError.getMessage());
+                            ctx.callbackContext.error(formError.getErrorCode() + " " + formError.getMessage());
                         }
                     });
         });
@@ -205,7 +208,6 @@ public class Consent extends CordovaPlugin {
     @Override
     public void onDestroy() {
         readyCallbackContext = null;
-
         super.onDestroy();
     }
 

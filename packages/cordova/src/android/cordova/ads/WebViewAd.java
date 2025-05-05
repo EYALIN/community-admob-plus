@@ -10,7 +10,7 @@ public class WebViewAd extends AdBase {
 
     public WebViewAd(ExecuteContext ctx) {
         super(ctx);
-        Log.d(TAG, "WebViewAd");
+        Log.d(TAG, "WebViewAd instance created");
     }
 
     @Override
@@ -32,5 +32,4 @@ public class WebViewAd extends AdBase {
     public void hide(Context ctx) {
         ctx.resolve();
     }
-
 }

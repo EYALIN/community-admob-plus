@@ -24,7 +24,6 @@ public class Rewarded extends AdBase {
     @Override
     public void onDestroy() {
         clear();
-
         super.onDestroy();
     }
 
@@ -37,16 +36,18 @@ public class Rewarded extends AdBase {
             public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                 mAd = null;
                 emit(Events.AD_LOAD_FAIL, loadAdError);
-                ctx.reject(loadAdError.toString());
+                ctx.reject(loadAdError.getCode() + ": " + loadAdError.getMessage());
             }
 
             @Override
             public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
                 mAd = rewardedAd;
+
                 ServerSideVerificationOptions ssv = ctx.optServerSideVerificationOptions();
                 if (ssv != null) {
                     mAd.setServerSideVerificationOptions(ssv);
                 }
+
                 mAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                     @Override
                     public void onAdDismissedFullScreenContent() {
@@ -54,7 +55,7 @@ public class Rewarded extends AdBase {
                     }
 
                     @Override
-                    public void onAdFailedToShowFullScreenContent(AdError adError) {
+                    public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
                         emit(Events.AD_SHOW_FAIL, adError);
                     }
 
@@ -84,9 +85,7 @@ public class Rewarded extends AdBase {
     @Override
     public void show(Context ctx) {
         if (isLoaded()) {
-            mAd.show(getActivity(), rewardItem -> {
-                emit(Events.AD_REWARD, rewardItem);
-            });
+            mAd.show(getActivity(), rewardItem -> emit(Events.AD_REWARD, rewardItem));
             ctx.resolve();
         } else {
             ctx.reject("Ad is not loaded");
@@ -95,6 +94,7 @@ public class Rewarded extends AdBase {
 
     private void clear() {
         if (mAd != null) {
+            mAd.setFullScreenContentCallback(null);
             mAd = null;
         }
     }

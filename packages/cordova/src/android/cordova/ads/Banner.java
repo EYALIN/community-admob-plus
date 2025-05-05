@@ -1,5 +1,7 @@
 package admob.plus.cordova.ads;
 
+import android.app.Activity;
+import androidx.annotation.NonNull;
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.util.Log;
@@ -14,9 +16,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
 
 import java.util.HashMap;
 
@@ -115,7 +119,6 @@ public class Banner extends AdBase {
                 }
 
                 runJustBeforeBeingDrawn(adView, () -> emit(Events.BANNER_SIZE, computeAdSize()));
-
                 emit(Events.AD_LOAD, computeAdSize());
             }
 
@@ -339,10 +342,15 @@ public class Banner extends AdBase {
     }
 
     public enum AdSizeType {
-        BANNER, LARGE_BANNER, MEDIUM_RECTANGLE, FULL_BANNER, LEADERBOARD, SMART_BANNER;
+        BANNER,
+        LARGE_BANNER,
+        MEDIUM_RECTANGLE,
+        FULL_BANNER,
+        LEADERBOARD,
+        ADAPTIVE;
 
         @Nullable
-        public static AdSize getAdSize(int adSize) {
+        public static AdSize getAdSize(int adSize, @NonNull Activity activity) {
             switch (AdSizeType.values()[adSize]) {
                 case BANNER:
                     return AdSize.BANNER;
@@ -354,11 +362,18 @@ public class Banner extends AdBase {
                     return AdSize.FULL_BANNER;
                 case LEADERBOARD:
                     return AdSize.LEADERBOARD;
-                case SMART_BANNER:
-                    return AdSize.SMART_BANNER;
+                case ADAPTIVE:
+                    int adWidth = getAdWidthInPixels(activity);
+                    int adWidthDp = (int) (adWidth / activity.getResources().getDisplayMetrics().density);
+                    return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(activity, adWidthDp);
                 default:
-                    return null;
+                    return AdSize.BANNER;
             }
         }
+
+        private static int getAdWidthInPixels(@NonNull Activity activity) {
+            return activity.getResources().getDisplayMetrics().widthPixels;
+        }
     }
+
 }

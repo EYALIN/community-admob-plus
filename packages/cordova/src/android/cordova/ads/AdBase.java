@@ -36,12 +36,15 @@ public abstract class AdBase extends Ad implements GenericAd  {
     }
 
     protected CordovaWebView getCordovaWebView() {
-        return ExecuteContext.plugin.webView;
+        return ExecuteContext.plugin != null ? ExecuteContext.plugin.webView : null;
     }
 
-    protected View getWebView() {
-        return getCordovaWebView().getView();
-    }
+
+   protected View getWebView() {
+       CordovaWebView webView = getCordovaWebView();
+       return webView != null ? webView.getView() : null;
+   }
+
 
     protected ViewGroup getWebViewParent() {
         return (ViewGroup) getWebView().getParent();
