@@ -19,23 +19,37 @@ class AMBPlugin: CDVPlugin {
     override func pluginInitialize() {
         super.pluginInitialize()
         AMBContext.plugin = self
-        // Embed mainView (WKWebView) into contentView of the banner stack
-        let stack = AMBBannerStackView.shared
-        let contentView = stack.contentView
-        // Safely unwrap self.webView
-        if let mainView = self.webView {
-            contentView.addSubview(mainView)
-            mainView.translatesAutoresizingMaskIntoConstraints = false
+
+        let stackView = AMBBannerStackView.shared
+        stackView.axis = .vertical
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+
+        guard stackView.arrangedSubviews.isEmpty else { return }
+
+        // Remove webView from old parent
+        if let webView = self.webView {
+            webView.removeFromSuperview()
+            stackView.addArrangedSubview(webView)
+        } else {
+            print("❌ webView is nil")
+            return
+        }
+
+        // (Optional) Add a banner placeholder view here
+        // let placeholder = UIView()
+        // stackView.insertArrangedSubview(placeholder, at: 0)
+
+        let rootView = AMBContext.plugin.viewController.view!
+        rootView.addSubview(stackView)
 
         NSLayoutConstraint.activate([
-                mainView.topAnchor.constraint(equalTo: contentView.topAnchor),
-                mainView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-                mainView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-                mainView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
-            ])
-        } else {
-               print("❌ AMBPlugin: webView is nil in pluginInitialize")
-           }
+            stackView.topAnchor.constraint(equalTo: rootView.topAnchor),
+            stackView.bottomAnchor.constraint(equalTo: rootView.bottomAnchor),
+            stackView.leadingAnchor.constraint(equalTo: rootView.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: rootView.trailingAnchor)
+        ])
+
+
         if
           let x = commandDelegate.settings["disableSDKCrashReporting"] as? String,
           x.lowercased() == "true"

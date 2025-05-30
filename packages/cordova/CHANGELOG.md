@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.33.2 (2025-05-30)
+
+### Bug Fixes
+
+* **Fix IOS white screen**
+
 # 1.33.1 (2025-05-05)
 
 ### Bug Fixes
