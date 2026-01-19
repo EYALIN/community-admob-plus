@@ -1,43 +1,51 @@
-[![NPM version](https://img.shields.io/npm/v/community-admob-plus-cordova)](https://www.npmjs.com/package/community-admob-plus-cordova)
-[![Downloads](https://img.shields.io/npm/dm/community-admob-plus-cordova)](https://www.npmjs.com/package/community-admob-plus-cordova)
+# AdMob Plus Cordova
 
+> ## ⚠️ IMPORTANT: This Plugin Has Reached End of Life
 
-I dedicate a considerable amount of my free time to developing and maintaining many cordova plugins for the community ([See the list with all my maintained plugins][community_plugins]).
-To help ensure this plugin is kept updated,
-new features are added and bugfixes are implemented quickly,
-please donate a couple of dollars (or a little more if you can stretch) as this will help me to afford to dedicate time to its maintenance.
-Please consider donating if you're using this plugin in an app that makes you money,
-or if you're asking for new features or priority bug fixes. Thank you!
+---
 
-[![](https://img.shields.io/static/v1?label=Sponsor%20Me&style=for-the-badge&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/eyalin)
+## 🚀 We've Moved to Something Better!
 
+**This plugin is no longer maintained.** We've created new, dedicated, and actively maintained plugins!
 
+### 📢 For Ads — Use community-cordova-plugin-admob
 
-#### This is a fork of the original plugin admob-plus-cordova
-# [AdMob Plus Cordova](https://admob-plus.github.io)
+[![NPM version](https://img.shields.io/npm/v/community-cordova-plugin-admob)](https://www.npmjs.com/package/community-cordova-plugin-admob)
+[![Downloads](https://img.shields.io/npm/dm/community-cordova-plugin-admob)](https://www.npmjs.com/package/community-cordova-plugin-admob)
 
-AdMob Plus Cordova is the successor of [cordova-plugin-admob-free](https://github.com/ratson/cordova-plugin-admob-free), which provides a cleaner API and build with modern tools.
+```bash
+cordova plugin add community-cordova-plugin-admob --variable APP_ID_ANDROID=ca-app-pub-xxx~yyy --variable APP_ID_IOS=ca-app-pub-xxx~yyy
+```
 
-## WebView API for Ads Info
+👉 **[View community-cordova-plugin-admob on GitHub](https://github.com/niceonedaviddevs/community-cordova-plugin-admob)**
 
-https://github.com/admob-plus/admob-plus/pull/539
+### 🔐 For Consent — Use community-cordova-plugin-consent
 
+[![NPM version](https://img.shields.io/npm/v/community-cordova-plugin-consent)](https://www.npmjs.com/package/community-cordova-plugin-consent)
+[![Downloads](https://img.shields.io/npm/dm/community-cordova-plugin-consent)](https://www.npmjs.com/package/community-cordova-plugin-consent)
 
-## Documentation
+```bash
+cordova plugin add community-cordova-plugin-consent
+```
 
-<!--[WebView API for Ads Documentation](../../website/docs/cordova/ads/webview.md)-->
-[WebView API for Ads Documentation](https://github.com/ollm/admob-plus/blob/master/website/docs/cordova/ads/webview.md)
+👉 **[View community-cordova-plugin-consent on GitHub](https://github.com/niceonedaviddevs/community-cordova-plugin-consent)**
 
-You can find the documentation [on the website](https://admob-plus.github.io/docs/cordova).
+---
 
-## Contributing
+## ✨ Why Migrate?
 
-- Star this repository
-- Open issue for feature requests
-- [Sponsor this project](https://github.com/sponsors/EYALIN)
+- ✅ **Better performance** and smaller footprint
+- ✅ **Faster updates** with the latest AdMob SDK
+- ✅ **Dedicated consent management** (GDPR/ATT compliant)
+- ✅ **Active maintenance** and quick bug fixes
+- ✅ **Improved documentation** and support
+
+---
+
+## 💖 Support Development
+
+[![Sponsor Me](https://img.shields.io/static/v1?label=Sponsor%20Me&style=for-the-badge&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/eyalin)
 
 ## License
 
-AdMob Plus Cordova is [MIT licensed](../../LICENSE).
-
-[community_plugins]: https://github.com/EYALIN?tab=repositories&q=community&type=&language=&sort=
+[MIT licensed](../../LICENSE)

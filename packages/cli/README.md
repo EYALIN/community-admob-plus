@@ -1,60 +1,41 @@
-[![NPM version](https://img.shields.io/npm/v/admob-plus.svg)](https://npmjs.org/package/admob-plus)
-[![GitHub last commit](https://img.shields.io/github/last-commit/admob-plus/admob-plus)](https://github.com/admob-plus/admob-plus)
-![Dependency status](https://img.shields.io/librariesio/release/npm/admob-plus)
-![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/admob-plus)
-![NPM license](https://img.shields.io/npm/l/admob-plus)
+# admob-plus CLI
 
-admob-plus
-==========
+> ## ⚠️ IMPORTANT: This Package Has Reached End of Life
 
-<!-- AUTO-GENERATED-CONTENT:START (TOC) -->
-- [Usage](#usage)
-- [Commands](#commands)
-  - [`admob-plus doctor`](#admob-plus-doctor)
-  - [`admob-plus info`](#admob-plus-info)
-<!-- AUTO-GENERATED-CONTENT:END -->
+---
 
-<!-- AUTO-GENERATED-CONTENT:START (CLI) -->
-## Usage
+## 🚀 We've Moved to Something Better!
 
-```
-admob-plus <command>
+**This CLI tool is no longer maintained.** The new plugins don't require a separate CLI.
 
-Commands:
-  admob-plus doctor    Check your project setup for potential problems
-  admob-plus info      Get relevant version info about OS, toolchain and librari
-                       es
-  admob-plus install   Install plugin
-  admob-plus test-ids  Print test IDs
+### 📢 For Ads — Use community-cordova-plugin-admob
 
-Options:
-  --version  Show version number                                       [boolean]
-  --cwd                                                  [string] [default: "."]
-  --help     Show help                                                 [boolean]
+[![NPM version](https://img.shields.io/npm/v/community-cordova-plugin-admob)](https://www.npmjs.com/package/community-cordova-plugin-admob)
+[![Downloads](https://img.shields.io/npm/dm/community-cordova-plugin-admob)](https://www.npmjs.com/package/community-cordova-plugin-admob)
+
+```bash
+cordova plugin add community-cordova-plugin-admob --variable APP_ID_ANDROID=ca-app-pub-xxx~yyy --variable APP_ID_IOS=ca-app-pub-xxx~yyy
 ```
 
-## Commands
+👉 **[View community-cordova-plugin-admob on GitHub](https://github.com/niceonedaviddevs/community-cordova-plugin-admob)**
 
-### `admob-plus doctor`
+### 🔐 For Consent — Use community-cordova-plugin-consent
 
-Check your project setup for potential problems
+[![NPM version](https://img.shields.io/npm/v/community-cordova-plugin-consent)](https://www.npmjs.com/package/community-cordova-plugin-consent)
+[![Downloads](https://img.shields.io/npm/dm/community-cordova-plugin-consent)](https://www.npmjs.com/package/community-cordova-plugin-consent)
 
-```
-Options:
-  --version  Show version number                                       [boolean]
-  --cwd                                                  [string] [default: "."]
-  --help     Show help                                                 [boolean]
+```bash
+cordova plugin add community-cordova-plugin-consent
 ```
 
-### `admob-plus info`
+👉 **[View community-cordova-plugin-consent on GitHub](https://github.com/niceonedaviddevs/community-cordova-plugin-consent)**
 
-Get relevant version info about OS, toolchain and libraries
+---
 
-```
-Options:
-  --version    Show version number                                     [boolean]
-  --cwd                                                  [string] [default: "."]
-  --help       Show help                                               [boolean]
-  --clipboard  Copy the environment report output to the clipboard     [boolean]
-```
-<!-- AUTO-GENERATED-CONTENT:END -->
+## 💖 Support Development
+
+[![Sponsor Me](https://img.shields.io/static/v1?label=Sponsor%20Me&style=for-the-badge&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/eyalin)
+
+## License
+
+MIT licensed
